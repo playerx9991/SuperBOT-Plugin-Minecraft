@@ -1,0 +1,5 @@
+name: SuperBOTPlugin
+version: 1.0
+author: Parker Thornton
+main: com.parker.superbot.SuperBOT
+api-version: 1.17
