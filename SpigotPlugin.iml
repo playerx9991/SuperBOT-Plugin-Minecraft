@@ -40,5 +40,8 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.10.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.10.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.fasterxml.jackson.core:jackson-core:2.10.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.ftpserver:ftpserver-core:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.mina:mina-core:2.0.16" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.ftpserver:ftplet-api:1.1.1" level="project" />
   </component>
 </module>

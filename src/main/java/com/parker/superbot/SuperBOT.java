@@ -1,5 +1,6 @@
 package com.parker.superbot;
 
+import com.parker.superbot.files.FileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -41,6 +42,13 @@ public class SuperBOT extends JavaPlugin implements Listener {
         } catch (LoginException | InterruptedException e) {
             e.printStackTrace();
         }
+
+        try {
+            new FileManager().checkFiles();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 //        getCommand("example").setExecutor(new ExampleCommand(this));
         getServer().getPluginManager().registerEvents(this, this);
     }

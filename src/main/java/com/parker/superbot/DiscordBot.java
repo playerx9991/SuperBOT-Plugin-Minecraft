@@ -1,5 +1,6 @@
 package com.parker.superbot;
 
+import com.parker.superbot.files.FileManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -19,6 +20,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.security.auth.login.LoginException;
 import java.nio.channels.Channel;
+import java.nio.channels.FileChannel;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class DiscordBot extends ListenerAdapter {
@@ -37,11 +40,11 @@ public class DiscordBot extends ListenerAdapter {
 
          upsertCommands(jda);
 
-        jda.getTextChannelsByName("minecraft-chat", true).get(0).sendMessage("Server Is Up").queue();
+//        jda.getTextChannelsByName("minecraft-chat", true).get(0).sendMessage("Server Is Up").queue();
     }
 
     public void upsertCommands(JDA jda) {
-        jda.upsertCommand("time", "Set Time in The Server").addOption(OptionType.STRING, "time", "Time to set").queue();
+        jda.upsertCommand("time", "Set Time on The Server").addOption(OptionType.STRING, "time", "Time to set").queue();
         // .addSubcommands(new SubcommandData("set", "Set Time"))
         jda.upsertCommand("ping", "CalCulates Bots Ping").queue();
         jda.upsertCommand("ban", "Bans A Player on The Server").addOption(OptionType.STRING, "player", "Player's Name to ban").queue();
@@ -50,6 +53,8 @@ public class DiscordBot extends ListenerAdapter {
         jda.upsertCommand("deop", "DEOP A Player on The Server").addOption(OptionType.STRING, "player", "Player's Name to DEOP").queue();
         jda.upsertCommand("stop", "Stops The Server").queue();
         jda.upsertCommand("restart", "Restarts The Server").queue();
+        jda.upsertCommand("weather", "Set Weather on The Server").addOption(OptionType.STRING, "weather", "Weather to set").queue();
+        jda.upsertCommand("onlineplayers", "Gets All Online Players on the Server").queue();
     }
 
     @Override
@@ -72,10 +77,15 @@ public class DiscordBot extends ListenerAdapter {
     @Override
     public void onSlashCommand(SlashCommandEvent event)
     {
+        if (!event.getChannel().getId().equals(new FileManager().getCommandsChannelID())) {
+            replyEphemeral("Send Commands only in server-commands Channel", event);
+            return;
+        }
+
         if (event.getName().equals("time")) {
             if (event.getOption("time").getAsString().equals("")) return;
             SuperBOT.INSTANCE.runCommand("time set " + event.getOption("time").getAsString());
-            event.reply("Time has been set").queue();
+            reply("Time has been set", event);
         }
         if(event.getName().equals("ping")) {
             long time = System.currentTimeMillis();
@@ -87,30 +97,54 @@ public class DiscordBot extends ListenerAdapter {
         if (event.getName().equals("ban")) {
             if (event.getOption("player").getAsString().equals("")) return;
             SuperBOT.INSTANCE.runCommand("ban " + event.getOption("player").getAsString());
-            event.reply(event.getOption("player").getAsString() + " Has Been Banned").queue();
+            reply(event.getOption("player").getAsString() + " Has Been Banned", event);
         }
         if (event.getName().equals("pardon")) {
             if (event.getOption("player").getAsString().equals("")) return;
             SuperBOT.INSTANCE.runCommand("pardon " + event.getOption("player").getAsString());
-            event.reply(event.getOption("player").getAsString() + " Has Been Pardoned").queue();
+            reply(event.getOption("player").getAsString() + " Has Been Pardoned", event);
         }
         if (event.getName().equals("op")) {
             if (event.getOption("player").getAsString().equals("")) return;
             SuperBOT.INSTANCE.runCommand("op " + event.getOption("player").getAsString());
-            event.reply("Player Has Been OPed").queue();
+            reply("Player Has Been OPed", event);
         }
         if (event.getName().equals("deop")) {
             if (event.getOption("player").getAsString().equals("")) return;
             SuperBOT.INSTANCE.runCommand("deop " + event.getOption("player").getAsString());
-            event.reply(event.getOption("player").getAsString() + " Has Been DEOPed").queue();
+            reply(event.getOption("player").getAsString() + " Has Been DEOPed", event);
         }
         if (event.getName().equals("stop")) {
-            event.reply("Server Has Been Stopped").queue();
+            reply("Server Has Been Stopped", event);
             SuperBOT.INSTANCE.runCommand("stop");
         }
         if (event.getName().equals("restart")) {
-            event.reply("Server Is Restarting").queue();
+            reply("Server Is Restarting", event);
             SuperBOT.INSTANCE.runCommand("restart");
         }
+        if (event.getName().equals("weather")) {
+            String weather = event.getOption("weather").getAsString();
+            if (weather.equals("")) return;
+            if (weather.toLowerCase(Locale.ROOT).equals("clear") || weather.toLowerCase(Locale.ROOT).equals("rain") || weather.toLowerCase(Locale.ROOT).equals("thunder")) {
+                SuperBOT.INSTANCE.runCommand("weather " + event.getOption("weather").getAsString().toLowerCase(Locale.ROOT));
+                reply("Weather has been set", event);
+            } else {
+                replyEphemeral("Weather has to be set to either rain, clear, or thunder", event);
+                return;
+            }
+        }
+        if (event.getName().equals("onlineplayers")) {
+            replyEphemeral("Onlineplayers: " + SuperBOT.INSTANCE.getServer().getOnlinePlayers().size() + "/" + SuperBOT.INSTANCE.getServer().getMaxPlayers(), event);
+            for(int i = 0; i < SuperBOT.INSTANCE.getServer().getOnlinePlayers().size(); i++) {
+                replyEphemeral(i + ": " + SuperBOT.INSTANCE.getServer().getOnlinePlayers(), event);
+            }
+        }
+    }
+
+    public void reply(String msg, SlashCommandEvent event) {
+        event.reply(msg).queue();
+    }
+    public void replyEphemeral(String msg, SlashCommandEvent event) {
+        event.reply(msg).setEphemeral(true).queue();
     }
 }
