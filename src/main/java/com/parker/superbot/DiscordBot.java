@@ -36,12 +36,20 @@ public class DiscordBot extends ListenerAdapter {
          jda = jdabuilder;
 
          upsertCommands(jda);
+
+        jda.getTextChannelsByName("minecraft-chat", true).get(0).sendMessage("Server Is Up").queue();
     }
 
     public void upsertCommands(JDA jda) {
-        jda.upsertCommand("time", "Set Time in Minecraft Server").addOption(OptionType.STRING, "args", "asdasdasdasd").queue();
+        jda.upsertCommand("time", "Set Time in The Server").addOption(OptionType.STRING, "time", "Time to set").queue();
         // .addSubcommands(new SubcommandData("set", "Set Time"))
         jda.upsertCommand("ping", "CalCulates Bots Ping").queue();
+        jda.upsertCommand("ban", "Bans A Player on The Server").addOption(OptionType.STRING, "player", "Player's Name to ban").queue();
+        jda.upsertCommand("pardon", "UnBans A Player on The Server").addOption(OptionType.STRING, "player", "Player's Name to unban").queue();
+        jda.upsertCommand("op", "OP A Player on The Server").addOption(OptionType.STRING, "player", "Player's Name to OP").queue();
+        jda.upsertCommand("deop", "DEOP A Player on The Server").addOption(OptionType.STRING, "player", "Player's Name to DEOP").queue();
+        jda.upsertCommand("stop", "Stops The Server").queue();
+        jda.upsertCommand("restart", "Restarts The Server").queue();
     }
 
     @Override
@@ -51,14 +59,13 @@ public class DiscordBot extends ListenerAdapter {
 
         if (event.getAuthor().getId().equals("878702890347286538")) return;
 
-        if (event.getChannel().getId().equals("766410493241720865")) {
+        if (event.getChannel().getName().equals("minecraft-chat")) {
             Bukkit.broadcastMessage("[Discord] <" + event.getAuthor().getName() + "> " + msg.getContentRaw());
-            SuperBOT.INSTANCE.runCommand("time set day");
         }
     }
 
     public void sendChatMessage(String ign, String msg) {
-        jda.getTextChannelById("766410493241720865").sendMessage("[Minecraft] <" + ign + "> " + msg).queue();
+        jda.getTextChannelsByName("minecraft-chat", true).get(0).sendMessage("[Minecraft] <" + ign + "> " + msg).queue();
     }
 
 
@@ -66,21 +73,44 @@ public class DiscordBot extends ListenerAdapter {
     public void onSlashCommand(SlashCommandEvent event)
     {
         if (event.getName().equals("time")) {
-
-            event.reply("Time has been set").setEphemeral(true).queue();
-
-            if (!event.getOption("args").equals("")) {
-                SuperBOT.INSTANCE.runCommand("time set " + event.getOption("args").getAsString());
-                event.reply("Time has been set").setEphemeral(true).queue();
-            }
-        } else if(event.getName().equals("ping")) {
+            if (event.getOption("time").getAsString().equals("")) return;
+            SuperBOT.INSTANCE.runCommand("time set " + event.getOption("time").getAsString());
+            event.reply("Time has been set").queue();
+        }
+        if(event.getName().equals("ping")) {
             long time = System.currentTimeMillis();
-            event.reply("Pong!").setEphemeral(true) // reply or acknowledge
+            event.reply("Pong!") // reply or acknowledge
                     .flatMap(v ->
                             event.getHook().editOriginalFormat("Pong: %d ms", System.currentTimeMillis() - time) // then edit original
                     ).queue(); // Queue both reply and edit
-        } else {
-            return;
+        }
+        if (event.getName().equals("ban")) {
+            if (event.getOption("player").getAsString().equals("")) return;
+            SuperBOT.INSTANCE.runCommand("ban " + event.getOption("player").getAsString());
+            event.reply(event.getOption("player").getAsString() + " Has Been Banned").queue();
+        }
+        if (event.getName().equals("pardon")) {
+            if (event.getOption("player").getAsString().equals("")) return;
+            SuperBOT.INSTANCE.runCommand("pardon " + event.getOption("player").getAsString());
+            event.reply(event.getOption("player").getAsString() + " Has Been Pardoned").queue();
+        }
+        if (event.getName().equals("op")) {
+            if (event.getOption("player").getAsString().equals("")) return;
+            SuperBOT.INSTANCE.runCommand("op " + event.getOption("player").getAsString());
+            event.reply("Player Has Been OPed").queue();
+        }
+        if (event.getName().equals("deop")) {
+            if (event.getOption("player").getAsString().equals("")) return;
+            SuperBOT.INSTANCE.runCommand("deop " + event.getOption("player").getAsString());
+            event.reply(event.getOption("player").getAsString() + " Has Been DEOPed").queue();
+        }
+        if (event.getName().equals("stop")) {
+            event.reply("Server Has Been Stopped").queue();
+            SuperBOT.INSTANCE.runCommand("stop");
+        }
+        if (event.getName().equals("restart")) {
+            event.reply("Server Is Restarting").queue();
+            SuperBOT.INSTANCE.runCommand("restart");
         }
     }
 }
