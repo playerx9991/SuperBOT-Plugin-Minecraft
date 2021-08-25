@@ -9,19 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e0bf2163-d3ca-450e-83be-c4879c5642b9" name="Changes" comment="Update">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_ftpserver_ftplet_api_1_1_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_ftpserver_ftpserver_core_1_1_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_mina_mina_core_2_0_16.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/parker/superbot/files/FileManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/SpigotPlugin_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/SpigotPlugin_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_17_1_R0_1_SNAPSHOT.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_17_1_R0_1_SNAPSHOT.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SpigotPlugin.iml" beforeDir="false" afterPath="$PROJECT_DIR$/SpigotPlugin.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/parker/superbot/DiscordBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/parker/superbot/DiscordBot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/parker/superbot/SuperBOT.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/parker/superbot/SuperBOT.java" afterDir="false" />
-    </list>
+    <list default="true" id="e0bf2163-d3ca-450e-83be-c4879c5642b9" name="Changes" comment="Update" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -116,7 +104,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629766821945</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Update">
+      <created>1598368150674</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1598368150674</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
