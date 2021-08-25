@@ -16,8 +16,8 @@ public class FileManager {
         if (file.createNewFile()) {
             try {
                 Map<String, Object> map = new HashMap<>();
-                map.put("CommandsChannelID", "879526448174620723");
-                map.put("ChatChannelID", "879528154115477524");
+                map.put("CommandsChannelID", "880197108387418164");
+                map.put("ChatChannelID", "879854611832373308");
 
                 Writer writer = new FileWriter(file);
 
@@ -92,6 +92,48 @@ public class FileManager {
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
+        }
+    }
+    public void setCommandChannel(String id) throws IOException {
+        File file = new File("plugins/SuperBotPlugin/config/conf.json");
+        file.getParentFile().mkdirs();
+        if (file.exists()) {
+            try {
+                Map<String, Object> map = new HashMap<>();
+                map.put("CommandsChannelID", id);
+                map.put("ChatChannelID", getChatChannelID());
+
+                Writer writer = new FileWriter(file);
+
+                Gson gson = new Gson();
+
+                gson.toJson(map, writer);
+
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void setChatChannel(String id) throws IOException {
+        File file = new File("plugins/SuperBotPlugin/config/conf.json");
+        file.getParentFile().mkdirs();
+        if (file.exists()) {
+            try {
+                Map<String, Object> map = new HashMap<>();
+                map.put("CommandsChannelID", getCommandsChannelID());
+                map.put("ChatChannelID", id);
+
+                Writer writer = new FileWriter(file);
+
+                Gson gson = new Gson();
+
+                gson.toJson(map, writer);
+
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

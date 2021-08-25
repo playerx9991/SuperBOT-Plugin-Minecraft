@@ -15,10 +15,13 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.security.auth.login.LoginException;
+import java.io.File;
+import java.io.IOException;
 import java.nio.channels.Channel;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
@@ -34,7 +37,7 @@ public class DiscordBot extends ListenerAdapter {
         // All other events will be disabled.
          JDA jdabuilder = JDABuilder.createLight("ODc4NzAyODkwMzQ3Mjg2NTM4.YSFB1g.dMDHHTod50-hKHUI1Eif4vAP5lA", GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES)
                 .addEventListeners(new DiscordBot())
-                .setActivity(Activity.playing("Test Server"))
+                .setActivity(Activity.playing("Super Earth"))
                 .build();
          jda = jdabuilder;
 
@@ -55,6 +58,8 @@ public class DiscordBot extends ListenerAdapter {
         jda.upsertCommand("restart", "Restarts The Server").queue();
         jda.upsertCommand("weather", "Set Weather on The Server").addOption(OptionType.STRING, "weather", "Weather to set").queue();
         jda.upsertCommand("onlineplayers", "Gets All Online Players on the Server").queue();
+        jda.upsertCommand("setcommandchannel", "Sets The Channel to recieve commands from").addOption(OptionType.CHANNEL, "channel", "Channel to Set").queue();
+        jda.upsertCommand("setchatchannel", "Sets the channel that minecraft chat will be sent to").addOption(OptionType.CHANNEL, "channel", "Channel to Set").queue();
     }
 
     @Override
@@ -64,13 +69,13 @@ public class DiscordBot extends ListenerAdapter {
 
         if (event.getAuthor().getId().equals("878702890347286538")) return;
 
-        if (event.getChannel().getName().equals("minecraft-chat")) {
-            Bukkit.broadcastMessage("[Discord] <" + event.getAuthor().getName() + "> " + msg.getContentRaw());
+        if (event.getChannel().getId().equals(new FileManager().getChatChannelID())) {
+            Bukkit.broadcastMessage("[§9Discord§r] <" + event.getAuthor().getName() + "> " + msg.getContentRaw());
         }
     }
 
     public void sendChatMessage(String ign, String msg) {
-        jda.getTextChannelsByName("minecraft-chat", true).get(0).sendMessage("[Minecraft] <" + ign + "> " + msg).queue();
+        jda.getTextChannelById(new FileManager().getChatChannelID()).sendMessage("[Minecraft] <" + ign + "> " + msg).queue();
     }
 
 
@@ -134,9 +139,35 @@ public class DiscordBot extends ListenerAdapter {
             }
         }
         if (event.getName().equals("onlineplayers")) {
-            replyEphemeral("Onlineplayers: " + SuperBOT.INSTANCE.getServer().getOnlinePlayers().size() + "/" + SuperBOT.INSTANCE.getServer().getMaxPlayers(), event);
-            for(int i = 0; i < SuperBOT.INSTANCE.getServer().getOnlinePlayers().size(); i++) {
-                replyEphemeral(i + ": " + SuperBOT.INSTANCE.getServer().getOnlinePlayers(), event);
+            TextChannel tc = jda.getTextChannelById(new FileManager().getCommandsChannelID());
+            StringBuilder sb = new StringBuilder();
+            for(Player p : SuperBOT.INSTANCE.getServer().getOnlinePlayers()) {
+                sb.append("Name: " + p.getDisplayName() + "\n               UUID: " + p.getUniqueId() + "\n");
+            }
+            reply("Onlineplayers: " + SuperBOT.INSTANCE.getServer().getOnlinePlayers().size() + "/" + SuperBOT.INSTANCE.getServer().getMaxPlayers() + "\n" + sb, event);
+        }
+        if (event.getName().equals("setcommandchannel")) {
+            if (event.getOption("channel").getAsString().equals(null)) {
+                replyEphemeral("Please Specify Channel", event);
+                return;
+            }
+            reply(event.getOption("channel").getAsString(), event);
+            try {
+                new FileManager().setCommandChannel(event.getOption("channel").getAsString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (event.getName().equals("setchatchannel")) {
+            if (event.getOption("channel").getAsString().equals(null)) {
+                replyEphemeral("Please Specify Channel", event);
+                return;
+            }
+            reply(event.getOption("channel").getAsString(), event);
+            try {
+                new FileManager().setChatChannel(event.getOption("channel").getAsString());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
